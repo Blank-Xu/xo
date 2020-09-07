@@ -21,21 +21,21 @@ func {{ .FuncName }}(db XODB{{ goparamlist .Fields true true }}) ({{ if not .Ind
 	{{ end -}}
 	}
 
-	err = db.QueryRow(sqlstr{{ goparamlist .Fields true false }}).Scan({{ fieldnames .Type.Fields (print "&" $short) }})
+	err = db.QueryRowContext(DefaultContext, sqlstr{{ goparamlist .Fields true false }}).Scan({{ fieldnames .Type.Fields (print "&" $short) }})
 	if err != nil {
 		return nil, err
 	}
 
 	return &{{ $short }}, nil
 {{- else }}
-	q, err := db.Query(sqlstr{{ goparamlist .Fields true false }})
+	q, err := db.QueryContext(DefaultContext, sqlstr{{ goparamlist .Fields true false }})
 	if err != nil {
 		return nil, err
 	}
 	defer q.Close()
 
 	// load results
-	res := []*{{ .Type.Name }}{}
+	res := make([]*{{ .Type.Name }}{}, 0, 30)
 	for q.Next() {
 		{{ $short }} := {{ .Type.Name }}{
 		{{- if .Type.PrimaryKey }}

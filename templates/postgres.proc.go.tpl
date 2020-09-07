@@ -12,7 +12,7 @@ func {{ .Name }}(db XODB{{ goparamlist .Params true true }}) ({{ if $notVoid }}{
 {{- if $notVoid }}
 	var ret {{ retype .Return.Type }}
 	XOLog(sqlstr{{ goparamlist .Params true false }})
-	err = db.QueryRow(sqlstr{{ goparamlist .Params true false }}).Scan(&ret)
+	err = db.QueryRowContext(DefaultContext, sqlstr{{ goparamlist .Params true false }}).Scan(&ret)
 	if err != nil {
 		return {{ reniltype .Return.NilType }}, err
 	}
@@ -20,7 +20,7 @@ func {{ .Name }}(db XODB{{ goparamlist .Params true true }}) ({{ if $notVoid }}{
 	return ret, nil
 {{- else }}
 	XOLog(sqlstr)
-	_, err = db.Exec(sqlstr)
+	_, err = db.ExecContext(DefaultContext, sqlstr)
 	return err
 {{- end }}
 }

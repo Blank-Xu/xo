@@ -15,6 +15,7 @@ import (
 	"strings"
 
 	"github.com/alexflint/go-arg"
+	"github.com/knq/snaker"
 
 	"github.com/xo/dburl"
 	"github.com/xo/xo/internal"
@@ -244,7 +245,7 @@ func getFile(args *internal.ArgType, t *internal.TBuf) (*os.File, error) {
 	var err error
 
 	// determine filename
-	var filename = strings.ToLower(t.Name) + args.Suffix
+	filename := snaker.CamelToSnakeIdentifier(t.Name) + args.Suffix
 	if args.SingleFile {
 		filename = args.Filename
 	}

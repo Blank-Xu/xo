@@ -16,21 +16,21 @@ func {{ .Name }} (db XODB{{ range .QueryParams }}, {{ .Name }} {{ .Type }}{{ end
 	XOLog(sqlstr{{ range .QueryParams }}{{ if not .Interpolate }}, {{ .Name }}{{ end }}{{ end }})
 {{- if .OnlyOne }}
 	var {{ $short }} {{ .Type.Name }}
-	err = db.QueryRow(sqlstr{{ range .QueryParams }}, {{ .Name }}{{ end }}).Scan({{ fieldnames .Type.Fields (print "&" $short) }})
+	err = db.QueryRowContext(DefaultContext, sqlstr{{ range .QueryParams }}, {{ .Name }}{{ end }}).Scan({{ fieldnames .Type.Fields (print "&" $short) }})
 	if err != nil {
 		return nil, err
 	}
 
 	return &{{ $short }}, nil
 {{- else }}
-	q, err := db.Query(sqlstr{{ range .QueryParams }}, {{ .Name }}{{ end }})
+	q, err := db.QueryContext(DefaultContext, sqlstr{{ range .QueryParams }}, {{ .Name }}{{ end }})
 	if err != nil {
 		return nil, err
 	}
 	defer q.Close()
 
 	// load results
-	res := []*{{ .Type.Name }}{}
+	res := make([]*{{ .Type.Name }}{}, 0, 30)
 	for q.Next() {
 		{{ $short }} := {{ .Type.Name }}{}
 

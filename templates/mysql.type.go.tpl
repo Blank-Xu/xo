@@ -47,7 +47,7 @@ func ({{ $short }} *{{ .Name }}) Insert(db XODB) error {
 
 	// run query
 	XOLog(sqlstr, {{ fieldnames .Fields $short }})
-	_, err = db.Exec(sqlstr, {{ fieldnames .Fields $short }})
+	_, err = db.ExecContext(DefaultContext, sqlstr, {{ fieldnames .Fields $short }})
 	if err != nil {
 		return err
 	}
@@ -64,7 +64,7 @@ func ({{ $short }} *{{ .Name }}) Insert(db XODB) error {
 
 	// run query
 	XOLog(sqlstr, {{ fieldnames .Fields $short .PrimaryKey.Name }})
-	res, err := db.Exec(sqlstr, {{ fieldnames .Fields $short .PrimaryKey.Name }})
+	res, err := db.ExecContext(DefaultContext, sqlstr, {{ fieldnames .Fields $short .PrimaryKey.Name }})
 	if err != nil {
 		return err
 	}
@@ -106,7 +106,7 @@ func ({{ $short }} *{{ .Name }}) Insert(db XODB) error {
 
 			// run query
 			XOLog(sqlstr, {{ fieldnamesmulti .Fields $short .PrimaryKeyFields }}, {{ fieldnames .PrimaryKeyFields $short}})
-			_, err = db.Exec(sqlstr, {{ fieldnamesmulti .Fields $short .PrimaryKeyFields }}, {{ fieldnames .PrimaryKeyFields $short}})
+			_, err = db.ExecContext(DefaultContext, sqlstr, {{ fieldnamesmulti .Fields $short .PrimaryKeyFields }}, {{ fieldnames .PrimaryKeyFields $short}})
 			return err
 		{{- else }}
 			// sql query
@@ -116,7 +116,7 @@ func ({{ $short }} *{{ .Name }}) Insert(db XODB) error {
 
 			// run query
 			XOLog(sqlstr, {{ fieldnames .Fields $short .PrimaryKey.Name }}, {{ $short }}.{{ .PrimaryKey.Name }})
-			_, err = db.Exec(sqlstr, {{ fieldnames .Fields $short .PrimaryKey.Name }}, {{ $short }}.{{ .PrimaryKey.Name }})
+			_, err = db.ExecContext(DefaultContext, sqlstr, {{ fieldnames .Fields $short .PrimaryKey.Name }}, {{ $short }}.{{ .PrimaryKey.Name }})
 			return err
 		{{- end }}
 	}
@@ -153,7 +153,7 @@ func ({{ $short }} *{{ .Name }}) Delete(db XODB) error {
 
 		// run query
 		XOLog(sqlstr, {{ fieldnames .PrimaryKeyFields $short }})
-		_, err = db.Exec(sqlstr, {{ fieldnames .PrimaryKeyFields $short }})
+		_, err = db.ExecContext(DefaultContext, sqlstr, {{ fieldnames .PrimaryKeyFields $short }})
 		if err != nil {
 			return err
 		}
@@ -163,7 +163,7 @@ func ({{ $short }} *{{ .Name }}) Delete(db XODB) error {
 
 		// run query
 		XOLog(sqlstr, {{ $short }}.{{ .PrimaryKey.Name }})
-		_, err = db.Exec(sqlstr, {{ $short }}.{{ .PrimaryKey.Name }})
+		_, err = db.ExecContext(DefaultContext, sqlstr, {{ $short }}.{{ .PrimaryKey.Name }})
 		if err != nil {
 			return err
 		}
